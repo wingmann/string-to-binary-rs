@@ -37,6 +37,7 @@ fn main() {
             }
             _ => {
                 eprintln!("[!] Incorrect input!");
+                continue;
             }
         }
     }
@@ -64,7 +65,7 @@ fn from_binary_string(bin_str: String) -> Option<String> {
         }
     }
     if let Ok(v) = std::str::from_utf8(&bytes) {
-        return Some(v.trim_end_matches(' ').to_string());
+        return Some(v.to_string());
     }
     None
 }

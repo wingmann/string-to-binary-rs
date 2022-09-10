@@ -10,7 +10,7 @@ fn main() {
                     let data = input("Input text value:");
                     let binary = to_binary_string(data);
                     println!("Output:\n{binary}\n");
-                },
+                }
                 2 => {
                     let data = input("Input binary value:");
 
@@ -20,12 +20,12 @@ fn main() {
                         eprintln!("[!] Incorrect value!");
                         continue;
                     }
-                },
+                }
                 0 => std::process::exit(0),
                 _ => {
                     eprintln!("[!] Incorrect input!");
                     break;
-                },
+                }
             }
 
             if answer() {
@@ -100,24 +100,20 @@ fn from_binary_string(bin_str: String) -> Option<String> {
 mod tests {
     use super::*;
 
+    const STRING: &str = "🦀 Rustacean";
     const BYTES: &str = "11110000 10011111 10100110 10000000 00100000 01010010 01110101 01110011 \
                          01110100 01100001 01100011 01100101 01100001 01101110 ";
 
     #[test]
     fn to_binary() {
-        let binary_string = to_binary_string("🦀 Rustacean".to_string());
-
-        assert_eq!(
-            binary_string,
-            BYTES,
-        );
+        assert_eq!(to_binary_string(STRING.to_string()), BYTES);
     }
 
     #[test]
     fn from_binary() {
-        let binary_string = BYTES.to_string();
-        let string = from_binary_string(binary_string).unwrap();
-
-        assert_eq!(string, "🦀 Rustacean".to_string());
+        assert_eq!(
+            from_binary_string(BYTES.to_string()).unwrap(),
+            STRING.to_string()
+        );
     }
 }

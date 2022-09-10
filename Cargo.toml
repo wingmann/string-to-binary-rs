@@ -5,3 +5,4 @@ edition = "2021"
 authors = ["Alexander Shavrov <alexander.shavrov@outlook.com>"]
 
 [dependencies]
+yn = "0.1.1"

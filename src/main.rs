@@ -1,46 +1,75 @@
 use std::io::{self, Write};
 
 fn main() {
-    loop {
-        let mut input = String::new();
+    println!("String to binary representation converter");
+    'start: loop {
+        let mode = choose_mode();
+        if mode == 0 {
+            return;
+        }
+        loop {
+            match mode {
+                1 => {
+                    let data = input("Input text value:");
+                    let binary = to_binary_string(data);
+                    println!("Output:\n{binary}\n");
+                }
+                2 => {
+                    let data = input("Input binary value:");
 
-        print!("1) String to binary\n2) Binary to string\nEnter program id > ");
-        io::stdout().flush().unwrap();
-        io::stdin().read_line(&mut input).unwrap();
-
-        let number = if let Ok(num) = input.trim().parse() {
-            num
-        } else {
-            eprintln!("[!] Incorrect input!");
-            continue;
-        };
-        let mut input = String::new();
-
-        match number {
-            1 => {
-                println!("Input text value:");
-                io::stdin().read_line(&mut input).unwrap();
-                println!();
-                let binary = to_binary_string(input);
-                print!("Output:\n{binary}\n\n");
-            }
-            2 => {
-                println!("Input binary value:");
-                io::stdin().read_line(&mut input).unwrap();
-                println!();
-                if let Some(string) = from_binary_string(input) {
-                    print!("Output:\n{string}\n");
-                } else {
-                    eprintln!("[!] Incorrect value!");
-                    continue;
+                    if let Some(string) = from_binary_string(data) {
+                        println!("Output:\n{string}");
+                    } else {
+                        eprintln!("[!] Incorrect value!");
+                        continue;
+                    }
+                }
+                _ => {
+                    eprintln!("[!] Incorrect input!");
+                    break;
                 }
             }
-            _ => {
-                eprintln!("[!] Incorrect input!");
+
+            if answer() {
                 continue;
+            } else {
+                continue 'start;
             }
         }
     }
+}
+
+fn answer() -> bool {
+    loop {
+        let next = input("Continue [Y/n]?");
+        if yn::yes(next.clone()) {
+            return true;
+        } else if yn::no(next.clone()) {
+            return false;
+        }
+        continue;
+    }
+}
+
+fn choose_mode() -> i32 {
+    println!("Choose the mode:");
+    println!("1) String to binary mode");
+    println!("2) Binary to string mode");
+    println!("0) Exit");
+
+    if let Ok(num) = input("Enter program id >").trim().parse() {
+        num
+    } else {
+        -1
+    }
+}
+
+fn input(message: &str) -> String {
+    print!("{message} ");
+    let mut input = String::new();
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut input).unwrap();
+    input
 }
 
 fn to_binary_string(value: String) -> String {

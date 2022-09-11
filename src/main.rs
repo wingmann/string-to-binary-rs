@@ -21,7 +21,6 @@ fn main() {
                         continue;
                     }
                 }
-                0 => std::process::exit(0),
                 _ => {
                     eprintln!("[!] Incorrect input!");
                     break;
@@ -40,9 +39,9 @@ fn main() {
 fn answer() -> bool {
     loop {
         let next = input("Continue [Y/n]?");
-        if yn::yes(next.clone()) {
+        if yn::yes(next.trim()) {
             return true;
-        } else if yn::no(next.clone()) {
+        } else if yn::no(next.trim()) {
             return false;
         }
         continue;
@@ -53,12 +52,11 @@ fn choose_mode() -> i32 {
     println!("Choose the mode:");
     println!("1) String to binary mode");
     println!("2) Binary to string mode");
-    println!("0) Exit");
 
-    if let Ok(num) = input("Enter program id >").trim().parse() {
+    if let Ok(num) = input("Enter program id:").trim().parse() {
         num
     } else {
-        -1
+        0
     }
 }
 
@@ -83,8 +81,8 @@ fn from_binary_string(bin_str: String) -> Option<String> {
     let vec: Vec<&str> = bin_str.trim().split(' ').collect();
     let mut bytes: Vec<u8> = vec![];
 
-    for b in vec.iter() {
-        if let Ok(byte) = u8::from_str_radix(b, 2) {
+    for i in vec.iter() {
+        if let Ok(byte) = u8::from_str_radix(i, 2) {
             bytes.push(byte);
         } else {
             return None;
@@ -101,18 +99,18 @@ mod tests {
     use super::*;
 
     const STRING: &str = "🦀 Rustacean";
-    const BYTES: &str = "11110000 10011111 10100110 10000000 00100000 01010010 01110101 01110011 \
+    const BINARY: &str = "11110000 10011111 10100110 10000000 00100000 01010010 01110101 01110011 \
                          01110100 01100001 01100011 01100101 01100001 01101110 ";
 
     #[test]
     fn to_binary() {
-        assert_eq!(to_binary_string(STRING.to_string()), BYTES);
+        assert_eq!(to_binary_string(STRING.to_string()), BINARY);
     }
 
     #[test]
     fn from_binary() {
         assert_eq!(
-            from_binary_string(BYTES.to_string()).unwrap(),
+            from_binary_string(BINARY.to_string()).unwrap(),
             STRING.to_string()
         );
     }

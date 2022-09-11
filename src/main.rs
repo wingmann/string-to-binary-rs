@@ -2,23 +2,26 @@ use std::io::{self, Write};
 
 fn main() {
     println!("String to binary representation converter");
-    'start: loop {
+    loop {
         let mode = choose_mode();
         loop {
             match mode {
                 1 => {
                     let data = input("Input text value:");
-                    let binary = to_binary_string(data);
-                    println!("Output:\n{binary}\n");
+                    if data == "\n" {
+                        eprintln!("[!] Input is empty!\n");
+                    } else {
+                        let out = to_binary_string(data);
+                        println!("Output:\n{out}\n");
+                    }
                 }
                 2 => {
                     let data = input("Input binary value:");
 
-                    if let Some(string) = from_binary_string(data) {
-                        println!("Output:\n{string}");
+                    if let Some(out) = from_binary_string(data) {
+                        println!("Output:\n{out}\n");
                     } else {
-                        eprintln!("[!] Incorrect value!");
-                        continue;
+                        eprintln!("[!] Incorrect value!\n");
                     }
                 }
                 _ => {
@@ -26,12 +29,11 @@ fn main() {
                     break;
                 }
             }
-
-            if question("Continue [Y/n]?") {
-                continue;
-            } else {
-                continue 'start;
+            if !question("Continue [Y/n]?") {
+                println!();
+                break;
             }
+            println!();
         }
     }
 }
@@ -39,6 +41,7 @@ fn main() {
 fn question(message: &str) -> bool {
     loop {
         let answer = input(message);
+
         if yn::yes(answer.trim().to_lowercase()) || answer == "\n" {
             return true;
         }
@@ -53,7 +56,7 @@ fn choose_mode() -> i32 {
     println!("1) String to binary mode");
     println!("2) Binary to string mode");
 
-    if let Ok(mode) = input("Enter program id:").trim().parse() {
+    if let Ok(mode) = input("Enter the program mode:").trim().parse() {
         mode
     } else {
         0
@@ -71,8 +74,11 @@ fn input(message: &str) -> String {
 fn to_binary_string(value: String) -> String {
     let mut binary_string = String::new();
 
-    for char in value.clone().into_bytes() {
-        binary_string += &format!("{:08b} ", char);
+    for byte in value.clone().into_bytes() {
+        if byte == 10 {
+            continue;
+        }
+        binary_string += &format!("{:08b} ", byte);
     }
     binary_string
 }
@@ -83,6 +89,9 @@ fn from_binary_string(bin_str: String) -> Option<String> {
 
     for i in vec.iter() {
         if let Ok(byte) = u8::from_str_radix(i, 2) {
+            if byte == 10 {
+                continue;
+            }
             bytes.push(byte);
         } else {
             return None;

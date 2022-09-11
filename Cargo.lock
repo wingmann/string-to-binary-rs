@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "binary_to_string"
+name = "string_to_binary"
 version = "0.1.0"
 dependencies = [
  "yn",

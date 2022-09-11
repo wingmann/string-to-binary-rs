@@ -27,7 +27,7 @@ fn main() {
                 }
             }
 
-            if answer() {
+            if question("Continue [Y/n]?") {
                 continue;
             } else {
                 continue 'start;
@@ -36,15 +36,15 @@ fn main() {
     }
 }
 
-fn answer() -> bool {
+fn question(message: &str) -> bool {
     loop {
-        let next = input("Continue [Y/n]?");
-        if yn::yes(next.trim()) {
+        let answer = input(message);
+        if yn::yes(answer.trim().to_lowercase()) || answer == "\n" {
             return true;
-        } else if yn::no(next.trim()) {
+        }
+        if yn::no(answer.trim().to_lowercase()) {
             return false;
         }
-        continue;
     }
 }
 
@@ -53,8 +53,8 @@ fn choose_mode() -> i32 {
     println!("1) String to binary mode");
     println!("2) Binary to string mode");
 
-    if let Ok(num) = input("Enter program id:").trim().parse() {
-        num
+    if let Ok(mode) = input("Enter program id:").trim().parse() {
+        mode
     } else {
         0
     }
